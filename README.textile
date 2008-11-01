@@ -1,0 +1,207 @@
+= Furwall Plugin for Rails
+
+The Furwall plugin provides functionality to prevent unauthorized access to
+objects within your controllers. It provides both model and controller extensions
+to manage permissions on objects and classes depending on performed action.
+The plugin works as an extension to acl_system2 plugin by Ezra Zygmuntowicz &
+Fabien Franzen.
+
+== Installation
+
+In order to use this plugin you should install acl_system2 plugin, assign roles
+to your users and check that the plugin works as expected.
+
+Next, install the plugin to vendor/plugins folder:
+
+  script/plugin install git://github.com/dekart/furwall.git
+
+Then you should create a migration that creates table for Permission model.
+Please check db/migrations folder for migration example.
+
+== Basic Usage
+
+After the table is created you should create your permission rules and use it
+in your controllers. For example, you want to check user permissions to edit
+Product. You should add permission check in your controller:
+
+  class ProductsController < ApplicationController
+    def edit
+      @product = Product.find(params[:id])
+
+      check_object_permissions!(@product)
+    end
+  end
+
+If current user (returned by current_user method) has permission for @product - 
+it will simply pass, otherwise it will raise Furwall::PermissionDenied exception.
+
+Let's create your first permission rule:
+
+  Permission.create(
+    :controllable => Prodict.first,
+    :action       => "edit",
+    :rule         => "admin | product_manager"
+  )
+
+This rule allows admin and product manager to edit first product. Imagine that
+we want to allow admin to edit all products. This rule will help:
+
+  Permission.create(
+    :controllable_type => "Product",
+    :action            => "edit",
+    :rule              => "admin"
+  )
+
+Now let's define Car model which is accestor of Product model (using STI):
+
+  class Car < Product
+  end
+
+If we don't specify any rules for Car model it will inherit rules from Product
+model. But if we want - no problem:
+
+  Permission.create(
+    :controllable_type => "Car",
+    :action            => "edit",
+    :rule              => "admin | car_manager"
+  )
+
+== State Check
+
+Let's imagine that we want to permit product manager to edit product only if
+they are not published yet. Let's define Product state check:
+
+  class Product < ActiveRecord::Base
+    def pending?
+      # Logic that returns true or false
+    end
+  end
+
+Then we can specify access rules as follows:
+
+  Permission.create(
+    :controllable_type => "Product",
+    :action            => "edit",
+    :rule              => "admin | (product_manager & :pending)"
+  )
+
+Furwall will automatically check result of pending? method. If the product is
+not published yet it will permit product manager to edit product, otherwise only
+admin will be able to edit it.
+
+== Relation Check
+
+Another option is to check user role in object context. Let's assume that our
+Product model has owner. Let's create a method that checks if the user is owner
+of the product:
+
+  class Production < ActiveRecord::Base
+    def is_owner?(user)
+      # Logic that returns true or false
+    end
+  end
+
+In this case we can create permission as follows:
+
+  Permission.create(
+    :controllable_type => "Product",
+    :action            => "edit",
+    :rule              => "admin | .owner"
+  )
+
+Furwall will check result of is_owner? method. If the method returns true -
+it will pass.
+
+== Permission References
+
+Let's take our magic wand and try to create advanced permission rules. For
+example we want to permit product edition only for category moderator. We
+can specify permission reference for the Product model:
+
+  class Category < ActiveRecord::Base
+    has_many :products
+
+    def is_moderator?(user)
+      # Logick that returns true or false
+    end
+  end
+
+  class Product < ActiveRecord::Base
+    belongs_to :category
+
+    permission_reference :category
+  end
+
+Now we can use it in our rules:
+
+  Permission.create(
+    :controllable_type => "Product",
+    :action            => "edit",
+    :rule              => "admin | category.moderator"
+  )
+
+Furwall will check is_moderator? for product's category reference. If the method
+returns true - it will pass.
+
+== Permission Context
+
+By default Furwall uses current_user method to retreive user for permission
+check. You can change this behavior by specifying required user manually:
+
+  class ProductsController < ApplicationController
+    def edit
+      @product = Product.find(params[:id])
+
+      check_object_permissions!(@product, :user => User.first)
+    end
+  end
+
+You can use custom action name for permission taht can be different from
+controller action name. For example you can use same action name for both edit and
+update methods:
+
+  class ProductsController < ApplicationController
+    def edit
+      @product = Product.find(params[:id])
+
+      check_object_permissions!(@product) # Uses :edit by default
+    end
+
+    def update
+      @product = Product.find(params[:id])
+
+      check_object_permissions!(@product, :edit) # Uses :update by default
+
+      # Update logic goes here
+    end
+  end
+
+== Permissions in Views
+
+You can check object permissions in your views:
+
+  <% if object_permit?(@product, :manage) %>
+    Management permitted
+  <% else %>
+    Management not permitted
+  <% end %>
+
+Or you can restrict some blocks to only permitted users:
+
+  <% object_restrict_to(@product, :manage) %>
+    This block is only for managers
+  <% end %>
+
+== Patches & Suggestion
+
+If you have any ideas about extending Furwall - feel free to fork it at Github:
+
+  http://github.com/dekart/furwall/tree/master
+
+You can also provide bug reports at Lighthouse:
+
+  http://furwall.lighthouseapp.com
+
+Bug fixes, patches, and additional specs are greately appreciated.
+
+Copyright (c) 2008 Alexey Dmitriev
