@@ -3,8 +3,8 @@ h1. Furwall Plugin for Rails
 The Furwall plugin provides functionality to prevent unauthorized access to
 objects within your controllers. It provides both model and controller extensions
 to manage permissions on objects and classes depending on performed action.
-The plugin works as an extension to acl_system2 plugin by Ezra Zygmuntowicz &
-Fabien Franzen.
+The plugin works as an extension to "acl_system2":http://github.com/ezmobius/acl_system2/tree/master
+plugin by Ezra Zygmuntowicz & Fabien Franzen.
 
 h2. Installation
 
@@ -206,5 +206,5 @@ Bug fixes, patches, and additional specs are greately appreciated.
 
 
 
-Copyright (c) 2008 Alexey Dmitriev - http://www.html-blog.ru
+Copyright (c) 2008 "Alexey Dmitriev":http://www.html-blog.ru
 Contact Email: rene.dekart@gmail.com
