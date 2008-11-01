@@ -1,4 +1,4 @@
-= Furwall Plugin for Rails
+h1. Furwall Plugin for Rails
 
 The Furwall plugin provides functionality to prevent unauthorized access to
 objects within your controllers. It provides both model and controller extensions
@@ -6,7 +6,7 @@ to manage permissions on objects and classes depending on performed action.
 The plugin works as an extension to acl_system2 plugin by Ezra Zygmuntowicz &
 Fabien Franzen.
 
-== Installation
+h2. Installation
 
 In order to use this plugin you should install acl_system2 plugin, assign roles
 to your users and check that the plugin works as expected.
@@ -18,7 +18,7 @@ Next, install the plugin to vendor/plugins folder:
 Then you should create a migration that creates table for Permission model.
 Please check db/migrations folder for migration example.
 
-== Basic Usage
+h2. Basic Usage
 
 After the table is created you should create your permission rules and use it
 in your controllers. For example, you want to check user permissions to edit
@@ -66,7 +66,7 @@ model. But if we want - no problem:
     :rule              => "admin | car_manager"
   )
 
-== State Check
+h2. State Check
 
 Let's imagine that we want to permit product manager to edit product only if
 they are not published yet. Let's define Product state check:
@@ -89,7 +89,7 @@ Furwall will automatically check result of pending? method. If the product is
 not published yet it will permit product manager to edit product, otherwise only
 admin will be able to edit it.
 
-== Relation Check
+h2. Relation Check
 
 Another option is to check user role in object context. Let's assume that our
 Product model has owner. Let's create a method that checks if the user is owner
@@ -112,7 +112,7 @@ In this case we can create permission as follows:
 Furwall will check result of is_owner? method. If the method returns true -
 it will pass.
 
-== Permission References
+h2. Permission References
 
 Let's take our magic wand and try to create advanced permission rules. For
 example we want to permit product edition only for category moderator. We
@@ -143,7 +143,7 @@ Now we can use it in our rules:
 Furwall will check is_moderator? for product's category reference. If the method
 returns true - it will pass.
 
-== Permission Context
+h2. Permission Context
 
 By default Furwall uses current_user method to retreive user for permission
 check. You can change this behavior by specifying required user manually:
@@ -176,7 +176,7 @@ update methods:
     end
   end
 
-== Permissions in Views
+h2. Permissions in Views
 
 You can check object permissions in your views:
 
@@ -192,7 +192,7 @@ Or you can restrict some blocks to only permitted users:
     This block is only for managers
   <% end %>
 
-== Patches & Suggestion
+h2. Patches & Suggestion
 
 If you have any ideas about extending Furwall - feel free to fork it at Github:
 
@@ -204,4 +204,7 @@ You can also provide bug reports at Lighthouse:
 
 Bug fixes, patches, and additional specs are greately appreciated.
 
-Copyright (c) 2008 Alexey Dmitriev
+
+
+Copyright (c) 2008 Alexey Dmitriev - http://www.html-blog.ru
+Contact Email: rene.dekart@gmail.com
