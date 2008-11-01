@@ -204,8 +204,8 @@ You can also provide bug reports at Lighthouse:
 
 Bug fixes, patches, and additional specs are greately appreciated.
 
-!http://icanhascheezburger.files.wordpress.com/2008/10/funny-pictures-furwall-prevents-unauthorized-access.jpg!
-
 Copyright (c) 2008 "Alexey Dmitriev":http://www.html-blog.ru
 
 Contact Email: rene.dekart@gmail.com
+
+!http://icanhascheezburger.files.wordpress.com/2008/10/funny-pictures-furwall-prevents-unauthorized-access.jpg!
