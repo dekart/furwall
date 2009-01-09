@@ -1,10 +1,8 @@
 module Furwall
-  module Permissions
+  module ObjectPermissions
     def self.included(base)
       base.send(:extend, ClassMethods)
       base.send(:include, InstanceMethods)
-
-      base.has_many :permissions, :as => :controllable
 
       base.send(:cattr_accessor, :available_permission_references)
     end
@@ -15,9 +13,6 @@ module Furwall
           p.action == action.to_s
         end
 
-        # Trying to receive access rules from base class
-        permission ||= self.base_class.permission_for(action) unless self == self.base_class
-        
         return permission
       end
 
@@ -42,14 +37,8 @@ module Furwall
       end
 
       def permission_for(action)
-        permission = self.permissions.detect do |p|
-          p.action == action.to_s
-        end
-
         # Trying to receive access rules from class
         permission ||= self.class.permission_for(action)
-
-        return permission
       end
     end
   end
