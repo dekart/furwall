@@ -16,7 +16,7 @@ module Furwall
     def check_object_permissions!(*args)
       return if object_permit?(*args)
 
-      raise Furwall::PermissionDeined.new("Permission denied for object")
+      raise Furwall::PermissionDenied.new("Permission denied for object")
     end
 
     def object_permit?(*args)
