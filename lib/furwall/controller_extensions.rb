@@ -1,7 +1,4 @@
 module Furwall
-  class PermissionDenied < Exception
-  end
-
   module ControllerExtensions
     def self.included(base)
       if base.respond_to? :helper_method

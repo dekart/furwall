@@ -1,3 +1,4 @@
+require File.join(File.dirname(__FILE__), "lib", "furwall")
 require File.join(File.dirname(__FILE__), "lib", "furwall", "access_handler")
 require File.join(File.dirname(__FILE__), "app", "models", "permission")
 
